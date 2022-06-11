@@ -30,3 +30,9 @@ class UserRegisterForm(forms.ModelForm):
     class Meta:
         model = Usuarios
         fields = ['username', 'email', 'nombres', 'apellidos', 'nivel', 'is_staff',]
+    
+    #Validar que las contraseñas sean iguales
+    def clean_password2(self):
+        if self.cleaned_data.get('password') != self.cleaned_data.get('password2'):
+            self.add_error('password2', 'Las contraseñas no coinciden')
+        
