@@ -272,7 +272,14 @@ class Eliminar(LoginRequiredMixin, View):
     redirect_field_name = None
 
     def get(self, request, modo, p):
-        if modo == 'usuario':
+
+        if modo == 'producto':
+            prod = Producto.objects.get(id=p)
+            prod.delete()
+            messages.success(request, 'Producto de ID %s borrado exitosamente.' % p)
+            return HttpResponseRedirect("/inventario/listarProductos")  
+
+        elif modo == 'usuario':
             if request.user.is_superuser == False:
                 messages.error(request, 'No tienes permisos suficientes para borrar usuarios')  
                 return HttpResponseRedirect('/inventario/listarUsuarios')
@@ -383,3 +390,99 @@ class ListarUsuarios(LoginRequiredMixin, View):
         pass   
 
 #Fin de vista----------------------------------------------------------------------
+
+#Maneja y visualiza un formulario--------------------------------------------------#
+class AgregarProducto(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None
+
+    def post(self, request):
+        # Crea una instancia del formulario y la llena con los datos:
+        form = ProductoFormulario(request.POST)
+        # Revisa si es valido:
+        if form.is_valid():
+            # Procesa y asigna los datos con form.cleaned_data como se requiere
+            descripcion = form.cleaned_data['descripcion']
+            precio = form.cleaned_data['precio']
+            disponible = form.cleaned_data['disponible']
+            categoria = form.cleaned_data['categoria']
+            
+           
+
+            prod = Producto(descripcion=descripcion,precio=precio,categoria=categoria,disponible=disponible)
+            prod.save()
+            
+            form = ProductoFormulario()
+            messages.success(request, 'Ingresado exitosamente bajo la ID %s.' % prod.id)
+            request.session['productoProcesado'] = 'agregado'
+            return HttpResponseRedirect("/inventario/agregarProducto")
+        else:
+            #De lo contrario lanzara el mismo formulario
+            return render(request, 'inventario/producto/agregarProducto.html', {'form': form})
+
+    # Si se llega por GET crearemos un formulario en blanco
+    def get(self,request):
+        form = ProductoFormulario()
+        #Envia al usuario el formulario para que lo llene
+        contexto = {'form':form , 'modo':request.session.get('productoProcesado')}   
+        contexto = complementarContexto(contexto,request.user)  
+        return render(request, 'inventario/producto/agregarProducto.html', contexto)
+#Fin de vista------------------------------------------------------------------------# 
+
+#Muestra el formulario de un producto especifico para editarlo----------------------------------#
+class EditarProducto(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None
+
+    def post(self,request,p):
+        # Crea una instancia del formulario y la llena con los datos:
+        form = ProductoFormulario(request.POST)
+        # Revisa si es valido:
+        if form.is_valid():
+            # Procesa y asigna los datos con form.cleaned_data como se requiere
+            descripcion = form.cleaned_data['descripcion']
+            precio = form.cleaned_data['precio']
+            disponible = form.cleaned_data['disponible']
+            categoria = form.cleaned_data['categoria']
+
+            prod = Producto.objects.get(id=p)
+            prod.descripcion = descripcion
+            prod.precio = precio
+            prod.disponible = disponible
+            prod.categoria = categoria
+           
+            prod.save()
+            form = ProductoFormulario(instance=prod)
+            messages.success(request, 'Actualizado exitosamente el producto de ID %s.' % p)
+            request.session['productoProcesado'] = 'editado'            
+            return HttpResponseRedirect("/inventario/editarProducto/%s" % prod.id)
+        else:
+            #De lo contrario lanzara el mismo formulario
+            return render(request, 'inventario/producto/agregarProducto.html', {'form': form})
+
+    def get(self, request,p): 
+        prod = Producto.objects.get(id=p)
+        form = ProductoFormulario(instance=prod)
+        #Envia al usuario el formulario para que lo llene
+        contexto = {'form':form , 'modo':request.session.get('productoProcesado'),'editar':True}    
+        contexto = complementarContexto(contexto,request.user) 
+        return render(request, 'inventario/producto/agregarProducto.html', contexto)
+#Fin de vista------------------------------------------------------------------------------------# 
+
+#Muestra una lista de 10 productos por pagina por el dataTable----------------------------------------#
+class ListarProductos(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None
+
+    def get(self, request):
+        from django.db import models
+
+        #Lista de productos de la BDD
+        productos = Producto.objects.all()
+                               
+        contexto = {'tabla':productos}
+
+        contexto = complementarContexto(contexto,request.user)  
+
+        return render(request, 'inventario/producto/listarProductos.html',contexto)
+#Fin de vista-------------------------------------------------------------------------#

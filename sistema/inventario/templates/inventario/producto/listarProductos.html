@@ -44,8 +44,7 @@
                                                             <th>Nombre</th>
                                                             <th>Precio</th>
                                                             <th>Disponible</th>
-                                                            <th>Categoria</th>
-                                                            <th>IVA</th>
+                                                            <th>Categoria</th>  
                                                             <th>Opciones</th>
                                                         </tr>
                                                     </thead>
@@ -60,23 +59,12 @@
                                                     {% if fila.categoria == '1' %}
                                                             Unidad
                                                     {% elif fila.categoria == '2' %}
-                                                            Kilo
-                                                    {% elif fila.categoria == '3' %}
-                                                            Litro
-                                                    {% elif fila.categoria == '4' %}
-                                                            Otros
+                                                            Pasa palos
+                                                    
                                                         {%endif%}
 
                                                             </td>
-                                                            <td>
-                                                                {% if fila.tiene_iva == True %}
-                                                                Si
-                                                                {%endif%}
-
-                                                                {% if fila.tiene_iva == False %}
-                                                                No
-                                                                {% endif %}
-                                                            </td>
+                                                            
                                                             <td>
 
                                                 <div class="btn-group">

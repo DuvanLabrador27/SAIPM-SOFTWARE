@@ -65,3 +65,63 @@ class Usuarios(AbstractBaseUser,PermissionsMixin):
     #Metodo to string
     def __str__(self):
         return self.username 
+    
+#-------------------------------PRODUCTO------------------------------------------------
+class Producto(models.Model):
+    #id
+    decisiones =  [('1','Unidad'),('2','Pasa Palos')]
+    descripcion = models.CharField(max_length=40)
+    precio = models.DecimalField(max_digits=9,decimal_places=2)
+    disponible = models.IntegerField(null=True)
+    categoria = models.CharField(max_length=20,choices=decisiones)
+
+    def __str__(self):
+        return self.descripcion
+
+    class Meta:
+        db_table = 'producto'
+        verbose_name = 'Producto'
+        verbose_name_plural = 'Productos'
+    
+    @classmethod
+    def preciosProductos(self):
+        objetos = self.objects.all().order_by('id')
+        arreglo = []
+        etiqueta = True
+        extra = 1
+
+        for indice,objeto in enumerate(objetos):
+            arreglo.append([])
+            if etiqueta:
+                arreglo[indice].append(0)
+                arreglo[indice].append("------")
+                etiqueta = False
+                arreglo.append([])
+
+            arreglo[indice + extra].append(objeto.id)
+            precio_producto = objeto.precio
+            arreglo[indice + extra].append("%d" % (precio_producto) )  
+
+        return arreglo 
+
+    @classmethod
+    def productosDisponibles(self):
+        objetos = self.objects.all().order_by('id')
+        arreglo = []
+        etiqueta = True
+        extra = 1
+
+        for indice,objeto in enumerate(objetos):
+            arreglo.append([])
+            if etiqueta:
+                arreglo[indice].append(0)
+                arreglo[indice].append("------")
+                etiqueta = False
+                arreglo.append([])
+
+            arreglo[indice + extra].append(objeto.id)
+            productos_disponibles = objeto.disponible
+            arreglo[indice + extra].append("%d" % (productos_disponibles) )  
+
+        return arreglo 
+#---------------------------------------------------------------------------------------

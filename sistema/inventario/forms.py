@@ -1,5 +1,5 @@
 from django import forms
-from .models import Usuarios
+from .models import Usuarios,Producto
 
 from django.forms import ModelChoiceField
 
@@ -112,5 +112,29 @@ class ClaveFormulario(forms.Form):
         attrs={'placeholder': 'Vuelva a insertar la clave nueva',
         'id':'repetir_clave','class':'form-control', 'type': 'password'}),
         )
+#-----------------------------------------------------------------------------------------
 
+class ProductoFormulario(forms.ModelForm):
+    precio = forms.DecimalField(
+        min_value = 0,
+        label = 'Precio',
+        widget = forms.NumberInput(
+        attrs={'placeholder': 'Precio del producto',
+        'id':'precio','class':'form-control'}),
+        )
+    class Meta:
+        model = Producto
+        fields = ['descripcion','precio','disponible','categoria']
+        labels = {
+        'descripcion': 'Nombre',
+        
+        }
+        widgets = {
+        'descripcion': forms.TextInput(attrs={'placeholder': 'Nombre del producto',
+        'id':'descripcion','class':'form-control'} ),
+
+        'disponible': forms.TextInput(attrs={'class':'form-control','placeholder': 'Disponibilidad del producto'}),
+        
+        'categoria': forms.Select(attrs={'class':'form-control','id':'categoria'})
+        }
 
