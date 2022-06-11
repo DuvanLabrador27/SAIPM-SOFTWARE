@@ -1,38 +1,116 @@
 from django import forms
 from .models import Usuarios
 
-#Formulario para registrar usuarios
-class UserRegisterForm(forms.ModelForm):
+from django.forms import ModelChoiceField
 
-#-----------Validar Contraseña-------------
-    password=forms.CharField(
-        label='Contraseña',
-        required=True,
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder' : 'Contraseña'
-           }
+
+
+
+class LoginFormulario(forms.Form):
+    username = forms.CharField(label="Tu nombre de usuario",widget=forms.TextInput(attrs={'placeholder': 'Tu nombre de usuario',
+        'class': 'form-control underlined', 'type':'text','id':'user'}))
+
+    password = forms.CharField(label="Contraseña",widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña',
+        'class': 'form-control underlined', 'type':'password','id':'password'}))
+
+
+
+
+class UsuarioFormulario(forms.Form):
+    niveles =  [ ('1','Administrador'),('0','Usuario') ]
+
+    username = forms.CharField(
+        label = "Nombre de usuario",
+        max_length=50,
+        widget = forms.TextInput(attrs={'placeholder': 'Inserte un nombre de usuario',
+        'id':'username','class':'form-control','value':''} ),
         )
 
-    )
-    password2=forms.CharField(
-        label='Contraseña',
-        required=True,
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder' : 'Repetir Contraseña'
-           }
+    name = forms.CharField(
+        label = 'Apellido',
+        max_length = 100,
+        widget = forms.TextInput(attrs={'class':'form-control','id':'name','placeholder':'Inserte un apellido','value':''}), 
         )
 
-    )
+    email = forms.CharField(
+        label = 'Correo electronico',
+        max_length=100,
+        widget = forms.TextInput(attrs={'placeholder': 'Inserte un correo valido',
+        'id':'email','class':'form-control','type':'email','value':''} )
+        )
 
-#Definiendo los archivos que se van a ver en mi formulario
-    class Meta:
-        model = Usuarios
-        fields = ['username', 'email', 'nombres', 'apellidos', 'nivel', 'is_staff',]
+    level =  forms.CharField(
+        required=False,
+        label="Nivel de acceso",
+        max_length=2,
+        widget=forms.Select(choices=niveles,attrs={'placeholder': 'El nivel de acceso',
+        'id':'level','class':'form-control','value':''}
+        )
+        )
+
+class NuevoUsuarioFormulario(forms.Form):
+    niveles =  [ ('1','Administrador'),('0','Usuario') ]
+
+    username = forms.CharField(
+        label = "Nombre de usuario",
+        max_length=50,
+        widget = forms.TextInput(attrs={'placeholder': 'Inserte un nombre de usuario',
+        'id':'username','class':'form-control','value':''} ),
+        )
+
+    name = forms.CharField(
+        label = 'Nombre',
+        max_length = 100,
+        widget = forms.TextInput(attrs={'class':'form-control','id':'name','placeholder':'Inserte un nombre','value':''}), 
+        )
+
+    email = forms.CharField(
+        label = 'Correo electronico',
+        max_length=100,
+        widget = forms.TextInput(attrs={'placeholder': 'Inserte un correo valido',
+        'id':'email','class':'form-control','type':'email','value':''} )
+        )    
+
+    password = forms.CharField(
+        label = 'Clave',
+        max_length=100,
+        widget = forms.TextInput(attrs={'placeholder': 'Inserte una clave',
+        'id':'password','class':'form-control','type':'password','value':''} )
+        )  
+
+    rep_password = forms.CharField(
+        label = 'Repetir clave',
+        max_length=100,
+        widget = forms.TextInput(attrs={'placeholder': 'Repita la clave de arriba',
+        'id':'rep_password','class':'form-control','type':'password','value':''} )
+        )  
+
+    level =  forms.CharField(
+        label="Nivel de acceso",
+        max_length=2,
+        widget=forms.Select(choices=niveles,attrs={'placeholder': 'El nivel de acceso',
+        'id':'level','class':'form-control','value':''}
+        )
+        )
+
+
+class ClaveFormulario(forms.Form):
     
-    #Validar que las contraseñas sean iguales
-    def clean_password2(self):
-        if self.cleaned_data.get('password') != self.cleaned_data.get('password2'):
-            self.add_error('password2', 'Las contraseñas no coinciden')
-        
+
+    clave_nueva = forms.CharField(
+        label = 'Ingrese la clave nueva',
+        max_length=50,
+        widget = forms.TextInput(
+        attrs={'placeholder': 'Inserte la clave nueva de acceso',
+        'id':'clave_nueva','class':'form-control', 'type': 'password'}),
+        )
+
+    repetir_clave = forms.CharField(
+        label="Repita la clave nueva",
+        max_length=50,
+        widget = forms.TextInput(
+        attrs={'placeholder': 'Vuelva a insertar la clave nueva',
+        'id':'repetir_clave','class':'form-control', 'type': 'password'}),
+        )
+
+

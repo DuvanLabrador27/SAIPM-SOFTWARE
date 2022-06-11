@@ -9,7 +9,7 @@ from django.forms import EmailField
 # teniendo en cuenta que la contraseña no se debe pasar como un texto plano se encripta en el modelo
 class UserManager(BaseUserManager):
 
-    def _create_user(self, username, email, password, is_staff, is_superuser, **extra_fields):
+    def _create_user(self,username,email,password,is_staff, is_superuser,**extra_fields):
         usuario=self.model(
             username=username, 
             email=email, 
@@ -24,8 +24,8 @@ class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         return self._create_user(username, email, password, False, False, **extra_fields)       
 
-    def create_superuser(self, username, email, password=None, **extra_fields):
-        return self._create_user(username, email, password, True, True, **extra_fields)
+    def create_superuser(self, username,email,password=None, **extra_fields):
+        return self._create_user(username, email,password, True, True, **extra_fields)
 
 
 #Usamos las clases AbstractBaseUser y permissionsMixin las cuales ya estan implementadas en Django
@@ -37,12 +37,13 @@ class Usuarios(AbstractBaseUser,PermissionsMixin):
     #El campo password no es necesario declararlo en el modelo, porque Django lo crea automaticamente
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=254, unique=True)
-    nombres = models.CharField(max_length=50, blank=True)
-    apellidos= models.CharField(max_length=50,blank=True)
-    nivel = models.IntegerField(null=True) 
+    name= models.CharField(max_length=50, blank=True)
+    level = models.IntegerField(null=True) 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+
+   
 
 #Configurar de que se va a usar un username para el acceso
     USERNAME_FIELD = 'username'
@@ -63,5 +64,4 @@ class Usuarios(AbstractBaseUser,PermissionsMixin):
 
     #Metodo to string
     def __str__(self):
-        return self.username + ' ' + self.nombres + ' ' + self.apellidos
-
+        return self.username 
