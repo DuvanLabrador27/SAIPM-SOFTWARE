@@ -13,6 +13,7 @@ path('eliminar/<str:modo>/<int:p>', views.Eliminar.as_view(), name='eliminar'),
 
 
 path('crearUsuario',views.CrearUsuario.as_view(), name='crearUsuario'),
+path('listarUsuarios', views.ListarUsuarios.as_view(), name='listarUsuarios'),
 
 ]
 

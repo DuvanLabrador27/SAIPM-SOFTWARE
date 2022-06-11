@@ -17,7 +17,7 @@ class LoginFormulario(forms.Form):
 
 
 class UsuarioFormulario(forms.Form):
-    niveles =  [ ('1','Administrador'),('0','Usuario') ]
+    is_active =  [ ('1','Administrador'),('0','Usuario') ]
 
     username = forms.CharField(
         label = "Nombre de usuario",
@@ -27,9 +27,9 @@ class UsuarioFormulario(forms.Form):
         )
 
     name = forms.CharField(
-        label = 'Apellido',
+        label = 'Nombre',
         max_length = 100,
-        widget = forms.TextInput(attrs={'class':'form-control','id':'name','placeholder':'Inserte un apellido','value':''}), 
+        widget = forms.TextInput(attrs={'class':'form-control','id':'name','placeholder':'Inserte un nombre','value':''}), 
         )
 
     email = forms.CharField(
@@ -39,17 +39,17 @@ class UsuarioFormulario(forms.Form):
         'id':'email','class':'form-control','type':'email','value':''} )
         )
 
-    level =  forms.CharField(
+    is_active =  forms.CharField(
         required=False,
         label="Nivel de acceso",
         max_length=2,
-        widget=forms.Select(choices=niveles,attrs={'placeholder': 'El nivel de acceso',
+        widget=forms.Select(choices=is_active,attrs={'placeholder': 'El nivel de acceso',
         'id':'level','class':'form-control','value':''}
         )
         )
 
 class NuevoUsuarioFormulario(forms.Form):
-    niveles =  [ ('1','Administrador'),('0','Usuario') ]
+    is_active =  [ ('1','Administrador'),('0','Usuario') ]
 
     username = forms.CharField(
         label = "Nombre de usuario",
@@ -85,10 +85,10 @@ class NuevoUsuarioFormulario(forms.Form):
         'id':'rep_password','class':'form-control','type':'password','value':''} )
         )  
 
-    level =  forms.CharField(
+    is_active =  forms.CharField(
         label="Nivel de acceso",
         max_length=2,
-        widget=forms.Select(choices=niveles,attrs={'placeholder': 'El nivel de acceso',
+        widget=forms.Select(choices=is_active,attrs={'placeholder': 'El nivel de acceso',
         'id':'level','class':'form-control','value':''}
         )
         )

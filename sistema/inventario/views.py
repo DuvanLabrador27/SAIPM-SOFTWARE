@@ -49,6 +49,7 @@ class Login(View):
                 return HttpResponseRedirect('/inventario/panel')
             else:
                 #De lo contrario lanzara el mismo formulario
+              
                 return render(request, 'inventario/login.html', {'form': form})
 
     # Si se llega por GET crearemos un formulario en blanco
@@ -58,6 +59,7 @@ class Login(View):
 
         form = LoginFormulario()
         #Envia al usuario el formulario para que lo llene
+        messages.error(request,"Usuario o clave incorrectos")
         return render(request, 'inventario/login.html', {'form': form})
 #Fin de vista---------------------------------------------------------------------#        
 
@@ -118,7 +120,7 @@ class Perfil(LoginRequiredMixin, View):
             editandoSuperAdmin = False
 
             if p == 1:
-                if request.user.nivel != 2:
+                if request.user.is_active != 1:
                     messages.error(request, 'No puede editar el perfil del administrador por no tener los permisos suficientes')
                     return HttpResponseRedirect('/inventario/perfil/ver/%s' % p)
                 editandoSuperAdmin = True
@@ -129,7 +131,7 @@ class Perfil(LoginRequiredMixin, View):
 
                 else:
                     if perf.is_superuser == True:
-                        if request.user.nivel == 2:
+                        if request.user.is_active == 1:
                             pass
 
                         elif perf.id != request.user.id:
@@ -139,17 +141,15 @@ class Perfil(LoginRequiredMixin, View):
 
             if editandoSuperAdmin:
                 form = UsuarioFormulario()
-                form.fields['level'].disabled = True
+                form.fields['is_active'].disabled = True
             else:
                 form = UsuarioFormulario()
-
-            #Me pregunto si habia una manera mas facil de hacer esto, solo necesitaba hacer que el formulario-
-            #-apareciera lleno de una vez, pero arrojaba User already exists y no pasaba de form.is_valid()
-            form['username'].field.widget.attrs['value']  = perf.username
+                form['username'].field.widget.attrs['value']  = perf.username
+                form['name'].field.widget.attrs['value']  = perf.name
+                form['email'].field.widget.attrs['value']  = perf.email
+                form['is_active'].field.widget.attrs['value']  = perf.is_active
             
-            form['name'].field.widget.attrs['value']  = perf.name
-            form['email'].field.widget.attrs['value']  = perf.email
-            form['level'].field.widget.attrs['value']  = perf.nivel
+            
 
             #Envia al usuario el formulario para que lo llene
             contexto = {'form':form,'modo':request.session.get('perfilProcesado'),'editar':'perfil',
@@ -162,7 +162,7 @@ class Perfil(LoginRequiredMixin, View):
         elif modo == 'clave':  
             perf = Usuarios.objects.get(id=p)
             if p == 1:
-                if request.user.nivel != 2:
+                if request.user.is_active != 1:
                    
                     messages.error(request, 'No puede cambiar la clave del administrador por no tener los permisos suficientes')
                     return HttpResponseRedirect('/inventario/perfil/ver/%s' % p)  
@@ -173,7 +173,7 @@ class Perfil(LoginRequiredMixin, View):
 
                 else:
                     if perf.is_superuser == True:
-                        if request.user.nivel == 2:
+                        if request.user.is_active == 1:
                             pass
 
                         elif perf.id != request.user.id:
@@ -207,9 +207,9 @@ class Perfil(LoginRequiredMixin, View):
                 perf = Usuarios.objects.get(id=p)
                 # Procesa y asigna los datos con form.cleaned_data como se requiere
                 if p != 1:
-                    level = form.cleaned_data['level']        
-                    perf.nivel = level
-                    perf.is_superuser = level
+                    level = form.cleaned_data['is_active']        
+                    perf.is_active = level
+                    perf.is_active = level
 
                 username = form.cleaned_data['username']
                 
@@ -248,9 +248,7 @@ class Perfil(LoginRequiredMixin, View):
                     error = 1
                     messages.error(request,"La clave nueva y su repeticion tienen que coincidir")
 
-                #else:
-                    #error = 1
-                    #messages.error(request,"La clave de acceso actual que ha insertado es incorrecta")
+              
 
                 if(error == 0):
                     messages.success(request, 'La clave se ha cambiado correctamente!')
@@ -322,7 +320,7 @@ class CrearUsuario(LoginRequiredMixin, View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             rep_password = form.cleaned_data['rep_password']
-            level = form.cleaned_data['level']
+            is_active = form.cleaned_data['is_active']
 
             error = 0
 
@@ -349,16 +347,16 @@ class CrearUsuario(LoginRequiredMixin, View):
                 messages.error(request, "El correo '%s' ya existe. eliga otro!" % email)                    
 
             if(error == 0):
-                if level == '0':
+                if is_active == '0':
                     nuevoUsuario = Usuarios.objects.create_user(username=username,password=password,email=email)
                     nivel = 0
-                elif level == '1':
+                elif is_active == '1':
                     nuevoUsuario = Usuarios.objects.create_superuser(username=username,password=password,email=email)
                     nivel = 1
 
                 
                 nuevoUsuario.name = name
-                nuevoUsuario.nivel = nivel
+                nuevoUsuario.is_active = nivel
                 nuevoUsuario.save()
 
                 messages.success(request, 'Usuario creado exitosamente')
@@ -366,3 +364,22 @@ class CrearUsuario(LoginRequiredMixin, View):
 
             else:
                 return HttpResponseRedirect('/inventario/crearUsuario')
+
+#----------------------------------------------------------------------------------#
+
+#Lista todos los usuarios actuales--------------------------------------------------------------#
+class ListarUsuarios(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None    
+
+    def get(self, request):
+        usuarios = Usuarios.objects.all()
+        #Envia al usuario el formulario para que lo llene
+        contexto = {'tabla':usuarios}   
+        contexto = complementarContexto(contexto,request.user)  
+        return render(request, 'inventario/usuario/listarUsuarios.html', contexto)
+
+    def post(self, request):
+        pass   
+
+#Fin de vista----------------------------------------------------------------------
