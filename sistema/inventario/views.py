@@ -59,7 +59,7 @@ class Login(View):
 
         form = LoginFormulario()
         #Envia al usuario el formulario para que lo llene
-        messages.error(request,"Usuario o clave incorrectos")
+        
         return render(request, 'inventario/login.html', {'form': form})
 #Fin de vista---------------------------------------------------------------------#        
 
