@@ -38,7 +38,6 @@ class Usuarios(AbstractBaseUser,PermissionsMixin):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=254, unique=True)
     name= models.CharField(max_length=50, blank=True)
-    level = models.IntegerField(null=True) 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -83,45 +82,5 @@ class Producto(models.Model):
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
     
-    @classmethod
-    def preciosProductos(self):
-        objetos = self.objects.all().order_by('id')
-        arreglo = []
-        etiqueta = True
-        extra = 1
-
-        for indice,objeto in enumerate(objetos):
-            arreglo.append([])
-            if etiqueta:
-                arreglo[indice].append(0)
-                arreglo[indice].append("------")
-                etiqueta = False
-                arreglo.append([])
-
-            arreglo[indice + extra].append(objeto.id)
-            precio_producto = objeto.precio
-            arreglo[indice + extra].append("%d" % (precio_producto) )  
-
-        return arreglo 
-
-    @classmethod
-    def productosDisponibles(self):
-        objetos = self.objects.all().order_by('id')
-        arreglo = []
-        etiqueta = True
-        extra = 1
-
-        for indice,objeto in enumerate(objetos):
-            arreglo.append([])
-            if etiqueta:
-                arreglo[indice].append(0)
-                arreglo[indice].append("------")
-                etiqueta = False
-                arreglo.append([])
-
-            arreglo[indice + extra].append(objeto.id)
-            productos_disponibles = objeto.disponible
-            arreglo[indice + extra].append("%d" % (productos_disponibles) )  
-
-        return arreglo 
+    
 #---------------------------------------------------------------------------------------
