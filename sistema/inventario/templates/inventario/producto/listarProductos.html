@@ -42,8 +42,10 @@
                                                         <tr>
                                                             <th>Item</th>
                                                             <th>Nombre</th>
+                                                            <th>Descripcion</th>
                                                             <th>Precio</th>
                                                             <th>Disponible</th>
+                                                            <th>Tamaño</th>
                                                             <th>Categoria</th>  
                                                             <th>Opciones</th>
                                                         </tr>
@@ -52,14 +54,32 @@
                                                     	{% for fila in tabla %}
                                                         <tr>
                                                             <td>{{ fila.id}}</td>
+                                                            <td>{{ fila.nombreProducto }}</td>
                                                             <td>{{ fila.descripcion }}</td>
                                                             <td>{{ fila.precio }}</td>
                                                             <td>{{ fila.disponible }}</td>
                                                             <td>
+                                                                {% if fila.tamanio == '1' %}
+                                                                       Grande empanada 560g
+                                                                {% elif fila.tamanio == '2' %}
+                                                                       Mediana empanada 500g
+                                                                {% elif fila.tamanio == '3' %}
+                                                                       Pequeña empanda 450g
+                                                                {% elif fila.tamanio == '4' %}
+                                                                       Grande flauta 600g
+                                                                {% elif fila.tamanio == '5' %}
+                                                                       Pequeña flauta 550g
+                                                                {% elif fila.tamanio == '6' %}
+                                                                       PasaPalos 450g
+                                                                
+                                                                    {%endif%}
+            
+                                                            </td>
+                                                            <td>
                                                     {% if fila.categoria == '1' %}
-                                                            Unidad
+                                                            Masa Lista
                                                     {% elif fila.categoria == '2' %}
-                                                            Pasa palos
+                                                            PasaPalos
                                                     
                                                         {%endif%}
 

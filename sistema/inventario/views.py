@@ -402,14 +402,16 @@ class AgregarProducto(LoginRequiredMixin, View):
         # Revisa si es valido:
         if form.is_valid():
             # Procesa y asigna los datos con form.cleaned_data como se requiere
+            nombreProducto = form.cleaned_data['nombreProducto']
             descripcion = form.cleaned_data['descripcion']
             precio = form.cleaned_data['precio']
             disponible = form.cleaned_data['disponible']
+            tamanio = form.cleaned_data['tamanio']
             categoria = form.cleaned_data['categoria']
             
            
 
-            prod = Producto(descripcion=descripcion,precio=precio,categoria=categoria,disponible=disponible)
+            prod = Producto(nombreProducto=nombreProducto,descripcion=descripcion,precio=precio,tamanio=tamanio,categoria=categoria,disponible=disponible)
             prod.save()
             
             form = ProductoFormulario()
@@ -440,15 +442,19 @@ class EditarProducto(LoginRequiredMixin, View):
         # Revisa si es valido:
         if form.is_valid():
             # Procesa y asigna los datos con form.cleaned_data como se requiere
+            nombreProducto = form.cleaned_data['nombreProducto']
             descripcion = form.cleaned_data['descripcion']
             precio = form.cleaned_data['precio']
             disponible = form.cleaned_data['disponible']
+            tamanio = form.cleaned_data['tamanio']
             categoria = form.cleaned_data['categoria']
 
             prod = Producto.objects.get(id=p)
+            prod.nombreProducto = nombreProducto
             prod.descripcion = descripcion
             prod.precio = precio
             prod.disponible = disponible
+            prod.tamanio = tamanio
             prod.categoria = categoria
            
             prod.save()

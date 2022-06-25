@@ -124,16 +124,21 @@ class ProductoFormulario(forms.ModelForm):
         )
     class Meta:
         model = Producto
-        fields = ['descripcion','precio','disponible','categoria']
+        fields = ['nombreProducto','descripcion','precio','disponible','tamanio','categoria']
         labels = {
-        'descripcion': 'Nombre',
+        'nombreProducto': 'Nombre',
+        'tamanio':'Tamaño',
         
         }
         widgets = {
-        'descripcion': forms.TextInput(attrs={'placeholder': 'Nombre del producto',
-        'id':'descripcion','class':'form-control'} ),
+        'nombreProducto': forms.TextInput(attrs={'placeholder': 'Nombre del producto',
+        'id':'nombreProducto','class':'form-control'} ),
+
+         'descripcion': forms.TextInput(attrs={'placeholder': 'Descripcion del producto','class':'form-control'} ),
 
         'disponible': forms.TextInput(attrs={'class':'form-control','placeholder': 'Disponibilidad del producto'}),
+
+        'tamanio': forms.Select(attrs={'class':'form-control','id':'tamanio'}),
         
         'categoria': forms.Select(attrs={'class':'form-control','id':'categoria'})
         }

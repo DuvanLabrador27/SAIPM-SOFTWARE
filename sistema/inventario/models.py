@@ -68,14 +68,17 @@ class Usuarios(AbstractBaseUser,PermissionsMixin):
 #-------------------------------PRODUCTO------------------------------------------------
 class Producto(models.Model):
     #id
-    decisiones =  [('1','Unidad'),('2','Pasa Palos')]
-    descripcion = models.CharField(max_length=40)
+    decisiones =  [('1','Masa lista'),('2','PasaPalos')]
+    decisionesTamanio =  [('1','Grande empanada 560g'),('2','Mediana empanada 500g'),('3','Pequeña empanda 450g'),('4','Grande flauta 600g'),('5','Pequeña flauta 550g'),('6','PasaPalos 450g')]
+    nombreProducto = models.CharField(max_length=40)
+    descripcion = models.CharField(max_length=500, blank=True)
     precio = models.DecimalField(max_digits=9,decimal_places=2)
     disponible = models.IntegerField(null=True)
+    tamanio = models.CharField(max_length=20,choices=decisionesTamanio)
     categoria = models.CharField(max_length=20,choices=decisiones)
 
     def __str__(self):
-        return self.descripcion
+        return self.nombreProducto
 
     class Meta:
         db_table = 'producto'
@@ -84,3 +87,74 @@ class Producto(models.Model):
     
     
 #---------------------------------------------------------------------------------------
+
+
+
+#-------------------------------CLIENTE------------------------------------------------
+class Cliente(models.Model):
+    #id
+    identificacion = models.CharField(max_length=40)
+    nombre = models.CharField(max_length=40)
+    telefono = models.CharField(max_length=40)
+    direccion  = models.CharField(max_length=40)
+    email = models.CharField(max_length=40)
+    decisionesId =  [('1','CC'),('2','Pasa Porte')]
+    categoriaId = models.CharField(max_length=20,choices=decisionesId)
+    idUsuario=models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+   
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        db_table = 'cliente'
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
+
+#-------------------------------COTIZACION------------------------------------------------
+class Cotizacion(models.Model):
+    #id
+    descripcion = models.CharField(max_length=40)
+    fecha= models.DateTimeField(auto_now_add=True)
+    clienteId = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.descripcion
+
+    class Meta:
+        db_table = 'cotizacion'
+        verbose_name = 'Cotizacion'
+        verbose_name_plural = 'Cotizacion'
+
+#-------------------------------FACTURA------------------------------------------------
+class Factura(models.Model):
+    #id
+    fecha= models.DateTimeField(auto_now_add=True)
+    cotizacionId = models.ForeignKey(Cotizacion, on_delete=models.CASCADE)
+    clienteId = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+
+
+    class Meta:
+        db_table = 'factura'
+        verbose_name = 'Factura'
+        verbose_name_plural = 'Facturas'
+    
+#-------------------------------DETALLE FACTURA------------------------------------------------
+class DetalleFactura(models.Model):
+    #id
+    total= models.DecimalField(max_digits=9,decimal_places=2)
+    facturaId = models.ForeignKey(Factura, on_delete=models.CASCADE)
+    productoId = models.ForeignKey(Producto, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'facturaDetalle'
+        verbose_name = 'FacturaDetalle'
+        verbose_name_plural = 'FacturasDetalles'
+
+
+
+
+
+
+
+
+
