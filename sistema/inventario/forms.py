@@ -1,5 +1,5 @@
 from django import forms
-from .models import Usuarios,Producto
+from .models import Usuarios,Producto,Cliente
 
 from django.forms import ModelChoiceField
 
@@ -142,4 +142,32 @@ class ProductoFormulario(forms.ModelForm):
         
         'categoria': forms.Select(attrs={'class':'form-control','id':'categoria'})
         }
+#-----------------------------------------------------------------------------------------
 
+class ClienteFormulario(forms.ModelForm):
+    
+     class Meta:
+        model = Cliente
+        fields = ['identificacion','categoriaId','nombre','telefono','direccion','email']
+        labels = {
+        'identificacion': 'Identificacion',
+        'categoriaId': 'Tipo de identificacion',
+        
+        
+        }
+        widgets = {
+        'identificacion': forms.TextInput(attrs={'placeholder': 'Numero de Id',
+        'id':'identificacion','class':'form-control'} ),
+
+         'categoriaId': forms.Select(attrs={'class':'form-control','id':'categoriaId'}),
+
+         'nombre': forms.TextInput(attrs={'placeholder': 'Nombre del cliente','class':'form-control'} ),
+
+         'telefono': forms.TextInput(attrs={'placeholder': '3222334223','class':'form-control'} ),
+
+         'direccion': forms.TextInput(attrs={'placeholder': 'Caobos Cúcuta','class':'form-control'} ),
+
+         'email': forms.TextInput(attrs={'placeholder': 'pastamillano@gmail.com','class':'form-control'} )
+
+        
+        }

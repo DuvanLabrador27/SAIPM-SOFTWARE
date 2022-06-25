@@ -492,3 +492,105 @@ class ListarProductos(LoginRequiredMixin, View):
 
         return render(request, 'inventario/producto/listarProductos.html',contexto)
 #Fin de vista-------------------------------------------------------------------------#
+
+#Crea y procesa un formulario para agregar a un cliente---------------------------------#
+class AgregarCliente(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None
+
+    def post(self, request):
+        # Crea una instancia del formulario y la llena con los datos:
+        form = ClienteFormulario(request.POST)
+        # Revisa si es valido:
+
+        if form.is_valid():
+            # Procesa y asigna los datos con form.cleaned_data como se requiere
+
+            identificacion = form.cleaned_data['identificacion']
+            categoriaId = form.cleaned_data['categoriaId']
+            nombre = form.cleaned_data['nombre']
+            telefono = form.cleaned_data['telefono']
+            direccion = form.cleaned_data['direccion']
+            email = form.cleaned_data['email']
+            
+
+            cliente = Cliente(identificacion=identificacion,categoriaId=categoriaId,nombre=nombre,telefono=telefono,direccion=direccion,email=email)
+            cliente.save()
+            form = ClienteFormulario()
+
+            messages.success(request, 'Ingresado exitosamente bajo la ID %s.' % cliente.id)
+            request.session['clienteProcesado'] = 'agregado'
+            return HttpResponseRedirect("/inventario/agregarCliente")
+        else:
+            #De lo contrario lanzara el mismo formulario
+            return render(request, 'inventario/cliente/agregarCliente.html', {'form': form})        
+
+    def get(self,request):
+        form = ClienteFormulario()
+        #Envia al usuario el formulario para que lo llene
+        contexto = {'form':form , 'modo':request.session.get('clienteProcesado')} 
+        contexto = complementarContexto(contexto,request.user)         
+        return render(request, 'inventario/cliente/agregarCliente.html', contexto)
+#Fin de vista-----------------------------------------------------------------------------#        
+
+#Muestra el mismo formulario del cliente pero con los datos a editar----------------------#
+class EditarCliente(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None
+
+    def post(self,request,p):
+        # Crea una instancia del formulario y la llena con los datos:
+        cliente = Cliente.objects.get(id=p)
+        form = ClienteFormulario(request.POST, instance=cliente)
+        # Revisa si es valido:
+    
+        if form.is_valid():           
+            # Procesa y asigna los datos con form.cleaned_data como se requiere
+            identificacion = form.cleaned_data['identificacion']
+            categoriaId = form.cleaned_data['categoriaId']
+            nombre = form.cleaned_data['nombre']
+            telefono = form.cleaned_data['telefono']
+            direccion = form.cleaned_data['direccion']
+            email = form.cleaned_data['email']
+            
+
+            cliente.identificacion = identificacion
+            cliente.categoriaId = categoriaId
+            cliente.nombre = nombre
+            cliente.telefono = telefono
+            cliente.direccion = direccion
+            cliente.email = email
+          
+            cliente.save()
+            form = ClienteFormulario(instance=cliente)
+
+            messages.success(request, 'Actualizado exitosamente el cliente de ID %s.' % p)
+            request.session['clienteProcesado'] = 'editado'            
+            return HttpResponseRedirect("/inventario/editarCliente/%s" % cliente.id)
+        else:
+            #De lo contrario lanzara el mismo formulario
+            return render(request, 'inventario/cliente/agregarCliente.html', {'form': form})
+
+    def get(self, request,p): 
+        cliente = Cliente.objects.get(id=p)
+        form = ClienteFormulario(instance=cliente)
+        #Envia al usuario el formulario para que lo llene
+        contexto = {'form':form , 'modo':request.session.get('clienteProcesado'),'editar':True} 
+        contexto = complementarContexto(contexto,request.user)     
+        return render(request, 'inventario/cliente/agregarCliente.html', contexto)  
+#Fin de vista--------------------------------------------------------------------------------# 
+
+#Crea una lista de los clientes, 10 por pagina----------------------------------------#
+class ListarClientes(LoginRequiredMixin, View):
+    login_url = '/inventario/login'
+    redirect_field_name = None
+
+    def get(self, request):
+        from django.db import models
+        #Saca una lista de todos los clientes de la BDD
+        clientes = Cliente.objects.all()                
+        contexto = {'tabla': clientes}
+        contexto = complementarContexto(contexto,request.user)         
+
+        return render(request, 'inventario/cliente/listarClientes.html',contexto) 
+#Fin de vista--------------------------------------------------------------------------#

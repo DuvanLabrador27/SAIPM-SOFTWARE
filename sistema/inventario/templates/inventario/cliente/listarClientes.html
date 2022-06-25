@@ -39,22 +39,32 @@
                                                 <table id="example2" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
                                                             <th>Cedula</th>
-                                                            <th>Nombre completo</th>
+                                                            <th>Tipo de identificacion</th> 
+                                                            <th>Nombre</th>
                                                             <th>Telefono</th>
-                                                            <th>Correo</th>
+                                                            <th>Direccion</th>
+                                                            <th>Email</th>
                                                             <th>Opciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     	{% for fila in tabla %}
                                                         <tr>
-                                                            <td>{{ fila.id }}</td>
-                                                            <td>{{ fila.cedula}}</td>
-                                                            <td>{{ fila.nombre }} {{ fila.apellido }}</td>
+                                                            <td>{{ fila.identificacion }}</td>
+                                                            <td>
+                                                                {% if fila.categoriaId == '1' %}
+                                                                        CC
+                                                                {% elif fila.categoriaId == '2' %}
+                                                                        PasaPorte
+                                                                
+                                                                    {%endif%}
+            
+                                                            </td>
+                                                            <td>{{ fila.nombre }}</td>
                                                             <td>{{ fila.telefono }}</td>
-                                                            <td>{{ fila.correo }}</td>
+                                                            <td>{{ fila.direccion }}</td>
+                                                            <td>{{ fila.email }}</td>
                                                             <td>
 
                                                 <div class="btn-group">

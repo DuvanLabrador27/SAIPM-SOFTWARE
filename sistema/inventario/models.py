@@ -98,9 +98,9 @@ class Cliente(models.Model):
     telefono = models.CharField(max_length=40)
     direccion  = models.CharField(max_length=40)
     email = models.CharField(max_length=40)
-    decisionesId =  [('1','CC'),('2','Pasa Porte')]
+    decisionesId =  [('1','CC'),('2','PasaPorte')]
     categoriaId = models.CharField(max_length=20,choices=decisionesId)
-    idUsuario=models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+   
    
 
     def __str__(self):
@@ -114,9 +114,10 @@ class Cliente(models.Model):
 #-------------------------------COTIZACION------------------------------------------------
 class Cotizacion(models.Model):
     #id
-    descripcion = models.CharField(max_length=40)
+    descripcion = models.CharField(max_length=500)
     fecha= models.DateTimeField(auto_now_add=True)
     clienteId = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    idUsuario=models.ForeignKey(Usuarios, on_delete=models.CASCADE,null=True)
     def __str__(self):
         return self.descripcion
 
@@ -131,6 +132,7 @@ class Factura(models.Model):
     fecha= models.DateTimeField(auto_now_add=True)
     cotizacionId = models.ForeignKey(Cotizacion, on_delete=models.CASCADE)
     clienteId = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    idUsuario=models.ForeignKey(Usuarios, on_delete=models.CASCADE,null=True)
 
 
     class Meta:
