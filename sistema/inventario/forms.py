@@ -101,7 +101,7 @@ class ClaveFormulario(forms.Form):
         label = 'Ingrese la clave nueva',
         max_length=50,
         widget = forms.TextInput(
-        attrs={'placeholder': 'Inserte la clave nueva de acceso',
+        attrs={'placeholder': 'Inserte la clave nueva de acceso, por favor...',
         'id':'clave_nueva','class':'form-control', 'type': 'password'}),
         )
 
@@ -136,7 +136,7 @@ class ProductoFormulario(forms.ModelForm):
 
          'descripcion': forms.TextInput(attrs={'placeholder': 'Descripcion del producto','class':'form-control'} ),
 
-        'disponible': forms.TextInput(attrs={'class':'form-control','placeholder': 'Disponibilidad del producto'}),
+        'disponible': forms.TextInput(attrs={'class':'form-control','placeholder': 'Cantidad disponible del producto'}),
 
         'tamanio': forms.Select(attrs={'class':'form-control','id':'tamanio'}),
         
